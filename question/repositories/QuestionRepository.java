@@ -7,7 +7,7 @@ import java.util.Collection;
 
 public interface QuestionRepository {
 
-  Question fetchQuestion(String userId, String questionId);
+  Question fetchQuestion(String questionId);
 
   Question updateQuestion(String userId, String questionId, Question question);
 
@@ -15,5 +15,5 @@ public interface QuestionRepository {
 
   Question createQuestion(String userId, Question question);
 
-  Collection<Question> getAllQuestions(String userId);
+  Collection<Question> getAllQuestions();
 }

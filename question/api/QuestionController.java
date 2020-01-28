@@ -29,14 +29,14 @@ public class QuestionController {
 
     @GetMapping(QUEST_PATH + "/{questionId}")
     public ResponseEntity<Question> readQuestion(
-            @RequestHeader("userId") String userId,
+            //@RequestHeader("userId") String userId,
             @PathVariable String questionId) {
-        Question question = service.provideQuestion(userId, questionId);
+        Question question = service.provideQuestion(/* userId, */ questionId);
         return ResponseEntity.ok(question);
     }
 
     @PatchMapping(QUEST_PATH + "/{questionId}")
-    public ResponseEntity<Question> updateQuestion(
+    public ResponseEntity<Question> updateQuestion( 
             @RequestHeader("userId") String userId,
             @PathVariable String questionId,
             @RequestBody Question question) {
@@ -53,9 +53,8 @@ public class QuestionController {
     }
 
     @GetMapping(QUEST_PATH)
-    public ResponseEntity<Collection<Question>> listQuestions(
-            @RequestHeader("userId") String userId) {
-        Collection<Question> questions = service.provideQuestions(userId);
+    public ResponseEntity<Collection<Question>> listQuestions() {
+        Collection<Question> questions = service.provideQuestions();
         return ResponseEntity.ok(questions);
     }
 }

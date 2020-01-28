@@ -16,8 +16,8 @@ public class QuestionService {
         this.questionRepository = questionRepository;
     }
 
-    public Question provideQuestion(String userId, String questionId) {
-        return questionRepository.fetchQuestion(userId, questionId);
+    public Question provideQuestion(String questionId) {
+        return questionRepository.fetchQuestion(questionId);
     }
 
     public Question updateQuestion(String userId, String questionId, Question question) {
@@ -32,7 +32,7 @@ public class QuestionService {
         return questionRepository.createQuestion(userId, question);
     }
 
-    public Collection<Question> provideQuestions(String userId) {
-        return questionRepository.getAllQuestions(userId);
+    public Collection<Question> provideQuestions() {
+        return questionRepository.getAllQuestions();
     }
 }
