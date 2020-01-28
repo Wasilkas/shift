@@ -1,7 +1,7 @@
-package shift.question.services;
+package ftc.shift.sample.services;
 
-import shift.question.models.Question;
-import shift.question.repositories.QuestionRepository;
+import ftc.shift.sample.models.Question;
+import ftc.shift.sample.repositories.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,6 @@
-package shift.question.repositories;
+package ftc.shift.sample.repositories;
 
-import shift.question.models.Question;
+import ftc.shift.sample.models.Question;
 
 import java.util.Collection;
 

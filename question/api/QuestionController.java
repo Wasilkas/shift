@@ -1,8 +1,8 @@
-package shift.question.api;
+package ftc.shift.sample.api;
 
 
-import shift.question.models.Question;
-import shift.question.services.QuestionService;
+import ftc.shift.sample.models.Question;
+import ftc.shift.sample.services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,30 +27,29 @@ public class QuestionController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping(QUEST_PATH + "/{questionId}")
-    public ResponseEntity<Question> readQuestion(
-            //@RequestHeader("userId") String userId,
-            @PathVariable String questionId) {
-        Question question = service.provideQuestion(/* userId, */ questionId);
-        return ResponseEntity.ok(question);
-    }
+     @GetMapping(QUEST_PATH + "/{questionId}")
+     public ResponseEntity<Question> readQuestion(
+             @PathVariable String questionId) {
+         Question question = service.provideQuestion(questionId);
+         return ResponseEntity.ok(question);
+     }
 
-    @PatchMapping(QUEST_PATH + "/{questionId}")
-    public ResponseEntity<Question> updateQuestion( 
-            @RequestHeader("userId") String userId,
-            @PathVariable String questionId,
-            @RequestBody Question question) {
-        Question updatedQuestion = service.updateQuestion(userId, questionId, question);
-        return ResponseEntity.ok(updatedQuestion);
-    }
+     @PatchMapping(QUEST_PATH + "/{questionId}")
+     public ResponseEntity<Question> updateQuestion(
+             @RequestHeader("userId") String userId,
+             @PathVariable String questionId,
+             @RequestBody Question question) {
+         Question updatedQuestion = service.updateQuestion(userId, questionId, question);
+         return ResponseEntity.ok(updatedQuestion);
+     }
 
-    @DeleteMapping(QUEST_PATH + "/{questionId}")
-    public ResponseEntity<?> deleteQuestion(
-            @RequestHeader("userId") String userId,
-            @PathVariable String questionId) {
-        service.deleteQuestion(userId, questionId);
-        return ResponseEntity.ok().build();
-    }
+     @DeleteMapping(QUEST_PATH + "/{questionId}")
+     public ResponseEntity<?> deleteQuestion(
+             @RequestHeader("userId") String userId,
+             @PathVariable String questionId) {
+         service.deleteQuestion(userId, questionId);
+         return ResponseEntity.ok().build();
+     }
 
     @GetMapping(QUEST_PATH)
     public ResponseEntity<Collection<Question>> listQuestions() {
