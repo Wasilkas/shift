@@ -27,12 +27,6 @@ public class QuestionController {
         return ResponseEntity.ok(result);
     }
 
-    /**
-     * Получение книги с указанным идентификатором
-     *
-     * @param userId - Идентификатор пользователя
-     * @param bookId - Идентификатор книги
-     */
     @GetMapping(QUEST_PATH + "/{questionId}")
     public ResponseEntity<Question> readQuestion(
             @RequestHeader("userId") String userId,
@@ -41,13 +35,6 @@ public class QuestionController {
         return ResponseEntity.ok(question);
     }
 
-    /**
-     * Обновление существующей книги
-     *
-     * @param userId - Идентификатор пользователя
-     * @param bookId - Идентификатор книги, которую необходимо обновить
-     * @param book   - Новые данные для книги (Название, автор, количество страниц, жанры)
-     */
     @PatchMapping(QUEST_PATH + "/{questionId}")
     public ResponseEntity<Question> updateQuestion(
             @RequestHeader("userId") String userId,
@@ -57,12 +44,6 @@ public class QuestionController {
         return ResponseEntity.ok(updatedQuestion);
     }
 
-    /**
-     * Удаление существующей книги
-     *
-     * @param userId - Идентификатор пользователя
-     * @param bookId - Идентификатор книги, которую необходимо удалить
-     */
     @DeleteMapping(QUEST_PATH + "/{questionId}")
     public ResponseEntity<?> deleteQuestion(
             @RequestHeader("userId") String userId,
@@ -71,11 +52,6 @@ public class QuestionController {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * Получение всех книг пользователя
-     *
-     * @param userId - Идентификатор пользователя
-     */
     @GetMapping(QUEST_PATH)
     public ResponseEntity<Collection<Question>> listQuestions(
             @RequestHeader("userId") String userId) {
