@@ -1,4 +1,4 @@
-package question.models;
+package shift.question.models;
 
 public class Question {
   private String id;

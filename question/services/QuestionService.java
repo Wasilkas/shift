@@ -1,7 +1,7 @@
-package question.services;
+package shift.question.services;
 
-import question.models.Question;
-import question.repositories.QuestionRepository;
+import shift.question.models.Question;
+import shift.question.repositories.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

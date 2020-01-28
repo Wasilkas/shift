@@ -1,6 +1,6 @@
-package question.repositories;
+package shift.question.repositories;
 
-import question.models.Question;
+import shift.question.models.Question;
 
 import java.util.Collection;
 

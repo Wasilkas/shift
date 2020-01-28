@@ -1,8 +1,8 @@
-package question.api;
+package shift.question.api;
 
 
-import question.models.Question;
-import question.services.QuestionService;
+import shift.question.models.Question;
+import shift.question.services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
