@@ -1,8 +1,10 @@
 package ftc.shift.sample.repositories;
 
+import ftc.shift.sample.exception.AccessDeniedException;
 import ftc.shift.sample.exception.NotFoundException;
 import ftc.shift.sample.models.Question;
 import jdk.nashorn.internal.ir.IdentNode;
+import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
@@ -46,34 +48,35 @@ public class InMemoryQuestionRepository implements QuestionRepository {
             if (q.getId().equals(questionId))
                  return q;
         }
-        throw new RuntimeException();
+        throw new NotFoundException();
     }
 
      @Override
      public Question updateQuestion(String userId, String questionId, Question question) {
-        List<Question> userQuestions = questionCache.stream()
-                .filter(i -> i.getAuthor().equals(userId))
-                .collect(Collectors.toList());
 
-        if (userQuestions.size() == 0)
+        if (questionCache.size() == 0)
             throw new NotFoundException();
 
-        for (Question q : userQuestions)
+        for (Question q : questionCache)
         {
-            if (q.getId().equals(questionId)) {
-                q.setText(question.getText());
-                q.setCorrectAnswer(question.getCorrectAnswer());
-                q.setSubject(question.getSubject());
-                return q;
-            }
+            if (q.getId().equals(questionId))
+                if (q.getAuthor().equals(userId)) {
+                    if (question.getText() != null)
+                        q.setText(question.getText());
+                    if (question.getCorrectAnswer() != null)
+                        q.setCorrectAnswer(question.getCorrectAnswer());
+                    if (question.getSubject() != null)
+                        q.setSubject(question.getSubject());
+                    return q;
+                } else throw new AccessDeniedException();
         }
-
         throw new NotFoundException();
      }
 
      @Override
      public void deleteQuestion(String userId, String questionId) {
-         questionCache.removeIf(q -> q.getAuthor().equals(userId) && q.getId().equals(questionId));
+         if (!questionCache.removeIf(q -> q.getAuthor().equals(userId) && q.getId().equals(questionId)))
+             throw new AccessDeniedException();
      }
 
     @Override
@@ -95,23 +98,45 @@ public class InMemoryQuestionRepository implements QuestionRepository {
         else
             questionCache.sort(Comparator.comparing(q -> -Integer.parseInt(q.getId())));
 
-        List<Question> userQuestions = questionCache;
-        int lastIndex = (userQuestions.size() - 1) % 10;
+        List<Question> questions = questionCache;
 
-        if (userId != null && subject != null)
-            userQuestions = userQuestions.stream().filter(i -> i.getAuthor().equals(userId)
+        if (userId != null && subject != null) {
+            questions = questions.stream().filter(i -> i.getAuthor().equals(userId)
                     && i.getSubject().equals(subject)).collect(Collectors.toList());
-        else
-            if (userId != null)
-                userQuestions = userQuestions.stream().filter(i -> i.getAuthor().equals(userId)).collect(Collectors.toList());
-            else
-                if (subject != null)
-                    userQuestions = userQuestions.stream().filter(i -> i.getSubject().equals(subject)).collect(Collectors.toList());
+        }
+        else {
+            if (userId != null) {
+                questions = questions.stream().filter(i -> i.getAuthor().equals(userId)).collect(Collectors.toList());
+            }
+            else {
+                if (subject != null) {
+                    questions = questions.stream().filter(i -> i.getSubject().equals(subject)).collect(Collectors.toList());
+                }
+            }
+        }
 
-        userQuestions = (userQuestions.size() <= intPage * 10) ?
-                userQuestions.subList((intPage - 1) * 10, (intPage - 1) * 10 + lastIndex + 1) :
-                userQuestions.subList((intPage - 1) * 10, (intPage - 1) * 10 + 10);
+        int lastIndex = (questions.size() - 1) % 10;
+        questions = (questions.size() <= intPage * 10) ?
+                questions.subList((intPage - 1) * 10, (intPage - 1) * 10 + lastIndex + 1) :
+                questions.subList((intPage - 1) * 10, (intPage - 1) * 10 + 10);
 
-        return userQuestions;
+        return questions;
+    }
+
+    @Override
+    public Collection<Question> getTestQuestions(String subject, String questionsCount) {
+        List<Question> questions = questionCache.stream().filter(i -> i.getSubject().equals(subject)).collect(Collectors.toList());
+
+        Random rand = new Random();
+        int i;
+        if (Integer.parseInt(questionsCount) > questions.size())
+            throw new NotFoundException();
+
+        while(questions.size() != Integer.parseInt(questionsCount))
+        {
+            i = rand.nextInt(questions.size() - 1);
+            questions.remove(i);
+        }
+        return questions;
     }
 }

@@ -35,4 +35,8 @@ public class QuestionService {
     public Collection<Question> provideQuestions(String userId, String subject, String page, String order) {
         return questionRepository.getAllQuestions(userId, subject, page, order);
     }
+
+    public Collection<Question> provideTestQuestions(String subject, String questionsCount) {
+        return questionRepository.getTestQuestions(subject, questionsCount);
+    }
 }
