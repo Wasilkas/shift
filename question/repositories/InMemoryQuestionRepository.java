@@ -75,8 +75,14 @@ public class InMemoryQuestionRepository implements QuestionRepository {
 
      @Override
      public void deleteQuestion(String userId, String questionId) {
-         if (!questionCache.removeIf(q -> q.getAuthor().equals(userId) && q.getId().equals(questionId)))
-             throw new AccessDeniedException();
+
+        List<Question> questions = questionCache.stream().filter(i -> i.getId().equals(questionId)).collect(Collectors.toList());
+
+        if (questions.size() == 0)
+            throw new NotFoundException();
+
+        if (!questions.removeIf(q -> q.getAuthor().equals(userId)))
+            throw new AccessDeniedException();
      }
 
     @Override
@@ -134,7 +140,7 @@ public class InMemoryQuestionRepository implements QuestionRepository {
 
         while(questions.size() != Integer.parseInt(questionsCount))
         {
-            i = rand.nextInt(questions.size() - 1);
+            i = rand.nextInt(questions.size());
             questions.remove(i);
         }
         return questions;
