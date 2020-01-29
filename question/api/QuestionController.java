@@ -54,9 +54,11 @@ public class QuestionController {
     @GetMapping(QUEST_PATH)
     public ResponseEntity<Collection<Question>> listQuestions(
             @RequestParam(value = "userId", required = false) String userId,
-            @RequestParam(value = "subject", required = false) String subject
+            @RequestParam(value = "subject", required = false) String subject,
+            @RequestParam(value = "page", required = false, defaultValue = "1") String page,
+            @RequestParam(value = "order", required = false, defaultValue = "1") String order
     ) {
-        Collection<Question> questions = service.provideQuestions(userId, subject);
+        Collection<Question> questions = service.provideQuestions(userId, subject, page, order);
         return ResponseEntity.ok(questions);
     }
 }

@@ -2,6 +2,7 @@ package ftc.shift.sample.repositories;
 
 import ftc.shift.sample.exception.NotFoundException;
 import ftc.shift.sample.models.Question;
+import jdk.nashorn.internal.ir.IdentNode;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
@@ -25,7 +26,16 @@ public class InMemoryQuestionRepository implements QuestionRepository {
         // В тестовых данных существует всего 3 пользователя: UserA / UserB / UserC
 
         questionCache.add(new Question("2", "Хто я?", "артем", "UserA", "филасафия"));
-        questionCache.add(new Question("1", "Хто ты?", "антон", "UserB", "филасафия"));
+        questionCache.add(new Question("5", "Хто ты?qwq", "антон", "UserB", "филасафия"));
+        questionCache.add(new Question("6", "Хто ты?333", "антон", "UserA", "матан"));
+        questionCache.add(new Question("3", "Хто ты?adf", "антон", "UserC", "матан"));
+        questionCache.add(new Question("4", "Хто ты?faf", "антон", "UserE", "история"));
+        questionCache.add(new Question("7", "Хто ты?asd", "антон", "UserF", "филасафия"));
+        questionCache.add(new Question("8", "Хто ты?dasd", "антон", "UserF", "история"));
+        questionCache.add(new Question("9", "Хто ты?asd", "антон", "UserE", "история"));
+        questionCache.add(new Question("10", "Хто ты?s", "антон", "UserB", "история"));
+        questionCache.add(new Question("11", "Хто тыdc?", "антон", "UserB", "филасафия"));
+        questionCache.add(new Question("1", "Хто тыr?", "антон", "UserB", "филасафия"));
         localId = questionCache.size();
     }
 
@@ -69,7 +79,6 @@ public class InMemoryQuestionRepository implements QuestionRepository {
     @Override
     public Question createQuestion(String userId, Question question) {
 
-        // Плохой способ генерирования случайных идентификаторов, использовать только для примеров
         question.setId(String.valueOf(++localId));
         question.setAuthor(userId);
         questionCache.add(question);
@@ -77,10 +86,17 @@ public class InMemoryQuestionRepository implements QuestionRepository {
     }
 
     @Override
-    public Collection<Question> getAllQuestions(String userId, String subject) {
+    public Collection<Question> getAllQuestions(String userId, String subject, String page, String order) {
 
-        questionCache.sort(Comparator.comparing(Question::getId));
+        int intPage = Integer.parseInt(page);
+
+        if (order.equals("1"))
+            questionCache.sort(Comparator.comparing(q -> Integer.parseInt(q.getId())));
+        else
+            questionCache.sort(Comparator.comparing(q -> -Integer.parseInt(q.getId())));
+
         List<Question> userQuestions = questionCache;
+        int lastIndex = (userQuestions.size() - 1) % 10;
 
         if (userId != null && subject != null)
             userQuestions = userQuestions.stream().filter(i -> i.getAuthor().equals(userId)
@@ -91,6 +107,10 @@ public class InMemoryQuestionRepository implements QuestionRepository {
             else
                 if (subject != null)
                     userQuestions = userQuestions.stream().filter(i -> i.getSubject().equals(subject)).collect(Collectors.toList());
+
+        userQuestions = (userQuestions.size() <= intPage * 10) ?
+                userQuestions.subList((intPage - 1) * 10, (intPage - 1) * 10 + lastIndex + 1) :
+                userQuestions.subList((intPage - 1) * 10, (intPage - 1) * 10 + 10);
 
         return userQuestions;
     }
