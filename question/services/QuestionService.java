@@ -32,7 +32,7 @@ public class QuestionService {
         return questionRepository.createQuestion(userId, question);
     }
 
-    public Collection<Question> provideQuestions() {
-        return questionRepository.getAllQuestions();
+    public Collection<Question> provideQuestions(String userId, String subject) {
+        return questionRepository.getAllQuestions(userId, subject);
     }
 }

@@ -15,5 +15,5 @@ public interface QuestionRepository {
 
   Question createQuestion(String userId, Question question);
 
-  Collection<Question> getAllQuestions();
+  Collection<Question> getAllQuestions(String userId, String subject);
 }
