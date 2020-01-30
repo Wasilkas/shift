@@ -1,6 +1,7 @@
 package ftc.shift.sample.services;
 
 import ftc.shift.sample.models.Question;
+import ftc.shift.sample.models.QuestionList;
 import ftc.shift.sample.repositories.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,11 +33,11 @@ public class QuestionService {
         return questionRepository.createQuestion(userId, question);
     }
 
-    public Collection<Question> provideQuestions(String userId, String subject, String page, String order) {
+    public QuestionList provideQuestions(String userId, String subject, String page, String order) {
         return questionRepository.getAllQuestions(userId, subject, page, order);
     }
 
-    public Collection<Question> provideTestQuestions(String subject, String questionsCount) {
+    public QuestionList provideTestQuestions(String subject, String questionsCount) {
         return questionRepository.getTestQuestions(subject, questionsCount);
     }
 }

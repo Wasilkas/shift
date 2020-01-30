@@ -2,6 +2,7 @@ package ftc.shift.sample.api;
 
 
 import ftc.shift.sample.models.Question;
+import ftc.shift.sample.models.QuestionList;
 import ftc.shift.sample.services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -52,21 +53,21 @@ public class QuestionController {
      }
 
     @GetMapping
-    public ResponseEntity<Collection<Question>> listQuestions(
+    public ResponseEntity<QuestionList> listQuestions(
             @RequestParam(value = "userId", required = false) String userId,
             @RequestParam(value = "subject", required = false) String subject,
             @RequestParam(value = "page", required = false, defaultValue = "1") String page,
             @RequestParam(value = "order", required = false, defaultValue = "1") String order
     ) {
-        Collection<Question> questions = service.provideQuestions(userId, subject, page, order);
+        QuestionList questions = service.provideQuestions(userId, subject, page, order);
         return ResponseEntity.ok(questions);
     }
 
     @GetMapping("/test")
-    public ResponseEntity<Collection<Question>> testQuestions(
+    public ResponseEntity<QuestionList> testQuestions(
             @RequestParam(value = "subject", required = true) String subject,
             @RequestParam(value = "questionsCount", required = true) String questionsCount) {
-        Collection<Question> questions = service.provideTestQuestions(subject, questionsCount);
+        QuestionList questions = service.provideTestQuestions(subject, questionsCount);
         return ResponseEntity.ok(questions);
     }
 }

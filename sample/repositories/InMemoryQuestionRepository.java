@@ -3,6 +3,7 @@ package ftc.shift.sample.repositories;
 import ftc.shift.sample.exception.AccessDeniedException;
 import ftc.shift.sample.exception.NotFoundException;
 import ftc.shift.sample.models.Question;
+import ftc.shift.sample.models.QuestionList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -96,7 +97,7 @@ public class InMemoryQuestionRepository implements QuestionRepository {
     }
 
     @Override
-    public Collection<Question> getAllQuestions(String userId, String subject, String page, String order) {
+    public QuestionList getAllQuestions(String userId, String subject, String page, String order) {
 
         final int QUESTION_AMOUNT = 10;
         int intPage = Integer.parseInt(page);
@@ -130,19 +131,21 @@ public class InMemoryQuestionRepository implements QuestionRepository {
             }
         }
 
-        if (page.equals("0"))
-            return questions;
+        if (page.equals("0")) {
+            return new QuestionList(questions, 0);
+        }
 
         int lastIndex = (questions.size() - 1) % QUESTION_AMOUNT;
         questions = (questions.size() <= intPage * QUESTION_AMOUNT) ?
                 questions.subList((intPage - 1) * QUESTION_AMOUNT, (intPage - 1) * QUESTION_AMOUNT + lastIndex + 1) :
                 questions.subList((intPage - 1) * QUESTION_AMOUNT, (intPage - 1) * QUESTION_AMOUNT + QUESTION_AMOUNT);
 
-        return questions;
+        return questionCache.size() % 10 > 0 ? new QuestionList(questions, questionCache.size() / 10 + 1) :
+                new QuestionList(questions, questionCache.size() / 10);
     }
 
     @Override
-    public Collection<Question> getTestQuestions(String subject, String questionsCount) {
+    public QuestionList getTestQuestions(String subject, String questionsCount) {
         List<Question> questions = questionCache.stream()
                 .filter(i -> i.getSubject().equals(subject))
                 .collect(Collectors.toList());
@@ -157,6 +160,6 @@ public class InMemoryQuestionRepository implements QuestionRepository {
             questions.remove(rand.nextInt(questions.size()));
         }
 
-        return questions;
+        return new QuestionList(questions, 1);
     }
 }
