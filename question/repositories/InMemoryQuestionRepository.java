@@ -3,9 +3,6 @@ package ftc.shift.sample.repositories;
 import ftc.shift.sample.exception.AccessDeniedException;
 import ftc.shift.sample.exception.NotFoundException;
 import ftc.shift.sample.models.Question;
-import jdk.nashorn.internal.ir.IdentNode;
-import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
@@ -20,25 +17,24 @@ public class InMemoryQuestionRepository implements QuestionRepository {
     /**
      * Ключ - имя пользователя, значение - все книги, которые есть у пользователя
      */
-    private List<Question> questionCache = new ArrayList<Question>();
-    private Integer localId;
+    private List<Question> questionCache = new ArrayList<>();
+    private Integer localId = 0;
 
     public InMemoryQuestionRepository() {
         // Заполним репозиторий тестовыми данными
         // В тестовых данных существует всего 3 пользователя: UserA / UserB / UserC
 
-        questionCache.add(new Question("2", "Хто я?", "артем", "UserA", "филасафия"));
-        questionCache.add(new Question("5", "Хто ты?qwq", "антон", "UserB", "филасафия"));
-        questionCache.add(new Question("6", "Хто ты?333", "антон", "UserA", "матан"));
-        questionCache.add(new Question("3", "Хто ты?adf", "антон", "UserC", "матан"));
-        questionCache.add(new Question("4", "Хто ты?faf", "антон", "UserE", "история"));
-        questionCache.add(new Question("7", "Хто ты?asd", "антон", "UserF", "филасафия"));
-        questionCache.add(new Question("8", "Хто ты?dasd", "антон", "UserF", "история"));
-        questionCache.add(new Question("9", "Хто ты?asd", "антон", "UserE", "история"));
-        questionCache.add(new Question("10", "Хто ты?s", "антон", "UserB", "история"));
-        questionCache.add(new Question("11", "Хто тыdc?", "антон", "UserB", "филасафия"));
-        questionCache.add(new Question("1", "Хто тыr?", "антон", "UserB", "филасафия"));
-        localId = questionCache.size();
+        questionCache.add(new Question(String.valueOf(++localId), "Хто я?", "артем", "UserA", "филасафия"));
+        questionCache.add(new Question(String.valueOf(++localId), "Хто ты?qwq", "антон", "UserB", "филасафия"));
+        questionCache.add(new Question(String.valueOf(++localId), "Хто ты?333", "антон", "UserA", "матан"));
+        questionCache.add(new Question(String.valueOf(++localId), "Хто ты?adf", "антон", "UserC", "матан"));
+        questionCache.add(new Question(String.valueOf(++localId), "Хто ты?faf", "антон", "UserE", "история"));
+        questionCache.add(new Question(String.valueOf(++localId), "Хто ты?asd", "антон", "UserF", "филасафия"));
+        questionCache.add(new Question(String.valueOf(++localId), "Хто ты?dasd", "антон", "UserF", "история"));
+        questionCache.add(new Question(String.valueOf(++localId), "Хто ты?asd", "антон", "UserE", "история"));
+        questionCache.add(new Question(String.valueOf(++localId), "Хто ты?s", "антон", "UserB", "история"));
+        questionCache.add(new Question(String.valueOf(++localId), "Хто тыdc?", "антон", "UserB", "филасафия"));
+        questionCache.add(new Question(String.valueOf(++localId), "Хто тыr?", "антон", "UserB", "филасафия"));
     }
 
     @Override
@@ -76,7 +72,8 @@ public class InMemoryQuestionRepository implements QuestionRepository {
      @Override
      public void deleteQuestion(String userId, String questionId) {
 
-        List<Question> questions = questionCache.stream().filter(i -> i.getId().equals(questionId)).collect(Collectors.toList());
+        List<Question> questions = questionCache.stream().filter(i -> i.getId().equals(questionId))
+                .collect(Collectors.toList());
 
         if (questions.size() == 0)
             throw new NotFoundException();
@@ -134,15 +131,12 @@ public class InMemoryQuestionRepository implements QuestionRepository {
         List<Question> questions = questionCache.stream().filter(i -> i.getSubject().equals(subject)).collect(Collectors.toList());
 
         Random rand = new Random();
-        int i;
         if (Integer.parseInt(questionsCount) > questions.size())
             throw new NotFoundException();
 
-        while(questions.size() != Integer.parseInt(questionsCount))
-        {
-            i = rand.nextInt(questions.size());
+        for (int i = 0; questions.size() != Integer.parseInt(questionsCount); i = rand.nextInt(questions.size()))
             questions.remove(i);
-        }
+
         return questions;
     }
 }

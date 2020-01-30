@@ -7,8 +7,6 @@ public class Question {
     private String author;
     private String subject;
 
-    public Question() {}
-
     public Question(String id, String text, String correctAnswer, String author, String subject) {
         this.id = id;
         this.text = text;

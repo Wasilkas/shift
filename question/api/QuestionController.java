@@ -64,8 +64,8 @@ public class QuestionController {
 
     @GetMapping(QUEST_PATH + "/test")
     public ResponseEntity<Collection<Question>> testQuestions(
-            @RequestParam(value = "subject", required = true) String subject,
-            @RequestParam(value = "questionsCount", required = true) String questionsCount) {
+            @RequestParam(value = "subject") String subject,
+            @RequestParam(value = "questionsCount") String questionsCount) {
         Collection<Question> questions = service.provideTestQuestions(subject, questionsCount);
         return ResponseEntity.ok(questions);
     }
