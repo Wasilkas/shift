@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
+@RequestMapping(path = "/api/v001/questions", consumes ="application/json")
 public class QuestionController {
-    private static final String QUEST_PATH = "/api/v001/questions";
     private QuestionService service;
 
     @Autowired
@@ -19,7 +19,7 @@ public class QuestionController {
         this.service = service;
     }
 
-    @PostMapping(QUEST_PATH)
+    @PostMapping
     public ResponseEntity<Question> createQuestion(
             @RequestHeader("userId") String userId,
             @RequestBody Question question) {
@@ -27,14 +27,14 @@ public class QuestionController {
         return ResponseEntity.ok(result);
     }
 
-     @GetMapping(QUEST_PATH + "/{questionId}")
+     @GetMapping("/{questionId}")
      public ResponseEntity<Question> readQuestion(
              @PathVariable String questionId) {
          Question question = service.provideQuestion(questionId);
          return ResponseEntity.ok(question);
      }
 
-     @PatchMapping(QUEST_PATH + "/{questionId}")
+     @PatchMapping("/{questionId}")
      public ResponseEntity<Question> updateQuestion(
              @RequestHeader("userId") String userId,
              @PathVariable String questionId,
@@ -43,7 +43,7 @@ public class QuestionController {
          return ResponseEntity.ok(updatedQuestion);
      }
 
-     @DeleteMapping(QUEST_PATH + "/{questionId}")
+     @DeleteMapping("/{questionId}")
      public ResponseEntity<?> deleteQuestion(
              @RequestHeader("userId") String userId,
              @PathVariable String questionId) {
@@ -51,7 +51,7 @@ public class QuestionController {
          return ResponseEntity.ok().build();
      }
 
-    @GetMapping(QUEST_PATH)
+    @GetMapping
     public ResponseEntity<Collection<Question>> listQuestions(
             @RequestParam(value = "userId", required = false) String userId,
             @RequestParam(value = "subject", required = false) String subject,
@@ -62,7 +62,7 @@ public class QuestionController {
         return ResponseEntity.ok(questions);
     }
 
-    @GetMapping(QUEST_PATH + "/test")
+    @GetMapping("/test")
     public ResponseEntity<Collection<Question>> testQuestions(
             @RequestParam(value = "subject", required = true) String subject,
             @RequestParam(value = "questionsCount", required = true) String questionsCount) {
