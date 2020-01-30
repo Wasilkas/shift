@@ -130,6 +130,9 @@ public class InMemoryQuestionRepository implements QuestionRepository {
             }
         }
 
+        if (page.equals("0"))
+            return questions;
+
         int lastIndex = (questions.size() - 1) % QUESTION_AMOUNT;
         questions = (questions.size() <= intPage * QUESTION_AMOUNT) ?
                 questions.subList((intPage - 1) * QUESTION_AMOUNT, (intPage - 1) * QUESTION_AMOUNT + lastIndex + 1) :
