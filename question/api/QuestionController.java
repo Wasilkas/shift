@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
-@RequestMapping(path = "/api/v001/questions", consumes ="application/json")
+@RequestMapping(path = "/api/v001/questions")
 public class QuestionController {
     private QuestionService service;
 

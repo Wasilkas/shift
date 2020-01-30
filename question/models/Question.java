@@ -1,11 +1,13 @@
 package ftc.shift.sample.models;
 
 public class Question {
-    private final String id;
-    private final String text;
-    private final String correctAnswer;
-    private final String author;
-    private final String subject;
+    private String id;
+    private String text;
+    private String correctAnswer;
+    private String author;
+    private String subject;
+
+    public Question() {};
 
     public Question(String id, String text, String correctAnswer, String author, String subject) {
         this.id = id;

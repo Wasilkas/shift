@@ -10,24 +10,23 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
-//@ConditionalOnProperty(name = "use.database", havingValue = "false")
 public class InMemoryQuestionRepository implements QuestionRepository {
     private List<Question> questionCache = new ArrayList<>();
-    private Integer localId;
+    private int localId = 0;
 
     @Autowired
     public InMemoryQuestionRepository() {
-        questionCache.add(new Question("2", "Хто я?", "артем", "UserA", "филасафия"));
-        questionCache.add(new Question("5", "Хто ты?qwq", "антон", "UserB", "филасафия"));
-        questionCache.add(new Question("6", "Хто ты?333", "антон", "UserA", "матан"));
-        questionCache.add(new Question("3", "Хто ты?adf", "антон", "UserC", "матан"));
-        questionCache.add(new Question("4", "Хто ты?faf", "антон", "UserE", "история"));
-        questionCache.add(new Question("7", "Хто ты?asd", "антон", "UserF", "филасафия"));
-        questionCache.add(new Question("8", "Хто ты?dasd", "антон", "UserF", "история"));
-        questionCache.add(new Question("9", "Хто ты?asd", "антон", "UserE", "история"));
-        questionCache.add(new Question("10", "Хто ты?s", "антон", "UserB", "история"));
-        questionCache.add(new Question("11", "Хто тыdc?", "антон", "UserB", "филасафия"));
-        questionCache.add(new Question("1", "Хто тыr?", "антон", "UserB", "филасафия"));
+        questionCache.add(new Question(String.valueOf(++localId), "Хто я?", "артем", "UserA", "филасафия"));
+        questionCache.add(new Question(String.valueOf(++localId), "Хто ты?qwq", "антон", "UserB", "филасафия"));
+        questionCache.add(new Question(String.valueOf(++localId), "Хто ты?333", "антон", "UserA", "матан"));
+        questionCache.add(new Question(String.valueOf(++localId), "Хто ты?adf", "антон", "UserC", "матан"));
+        questionCache.add(new Question(String.valueOf(++localId), "Хто ты?faf", "антон", "UserE", "история"));
+        questionCache.add(new Question(String.valueOf(++localId), "Хто ты?asd", "антон", "UserF", "филасафия"));
+        questionCache.add(new Question(String.valueOf(++localId), "Хто ты?dasd", "антон", "UserF", "история"));
+        questionCache.add(new Question(String.valueOf(++localId), "Хто ты?asd", "антон", "UserE", "история"));
+        questionCache.add(new Question(String.valueOf(++localId), "Хто ты?s", "антон", "UserB", "история"));
+        questionCache.add(new Question(String.valueOf(++localId), "Хто тыdc?", "антон", "UserB", "филасафия"));
+        questionCache.add(new Question(String.valueOf(++localId), "Хто тыr?", "антон", "UserB", "филасафия"));
         localId = questionCache.size();
     }
 
@@ -70,14 +69,14 @@ public class InMemoryQuestionRepository implements QuestionRepository {
      public void deleteQuestion(String userId, String questionId) {
 
         List<Question> questions = questionCache.stream()
-                .filter(i -> i.getId().equals(questionId))
+                .filter(q -> q.getId().equals(questionId))
                 .collect(Collectors.toList());
 
         if (questions.size() == 0) {
             throw new NotFoundException();
         }
 
-        if (!questions.removeIf(q -> q.getAuthor().equals(userId))) {
+        if (!questionCache.removeIf(q ->  q.getId().equals(questionId) && q.getAuthor().equals(userId))) {
             throw new AccessDeniedException();
         }
      }
