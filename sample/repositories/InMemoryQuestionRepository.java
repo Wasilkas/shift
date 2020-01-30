@@ -135,13 +135,15 @@ public class InMemoryQuestionRepository implements QuestionRepository {
             return new QuestionList(questions, 0);
         }
 
+        int listSize = questions.size();
+
         int lastIndex = (questions.size() - 1) % QUESTION_AMOUNT;
         questions = (questions.size() <= intPage * QUESTION_AMOUNT) ?
                 questions.subList((intPage - 1) * QUESTION_AMOUNT, (intPage - 1) * QUESTION_AMOUNT + lastIndex + 1) :
                 questions.subList((intPage - 1) * QUESTION_AMOUNT, (intPage - 1) * QUESTION_AMOUNT + QUESTION_AMOUNT);
 
-        return questionCache.size() % 10 > 0 ? new QuestionList(questions, questionCache.size() / 10 + 1) :
-                new QuestionList(questions, questionCache.size() / 10);
+        return listSize % QUESTION_AMOUNT > 0 ? new QuestionList(questions, listSize / QUESTION_AMOUNT + 1) :
+                new QuestionList(questions, listSize / QUESTION_AMOUNT);
     }
 
     @Override

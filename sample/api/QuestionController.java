@@ -1,14 +1,11 @@
 package ftc.shift.sample.api;
 
-
 import ftc.shift.sample.models.Question;
 import ftc.shift.sample.models.QuestionList;
 import ftc.shift.sample.services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collection;
 
 @RestController
 @RequestMapping(path = "/api/v001/questions")
