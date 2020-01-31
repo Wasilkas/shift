@@ -1,10 +1,26 @@
 package ftc.shift.sample.models;
 
 public class Question {
+    /**
+     * Уникальный идентификатор вопроса
+     */
     private String id;
+    /**
+     * Текст вопроса
+     */
     private String text;
+    /**
+     * Ответ на вопрос
+     */
     private String correctAnswer;
+    /**
+     * Автор вопроса
+     */
     private String author;
+
+    /**
+     * Предмет вопроса
+     */
     private String subject;
 
     public Question() {};
