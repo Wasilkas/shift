@@ -6,8 +6,6 @@ import ftc.shift.sample.repositories.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-
 @Service
 public class QuestionService {
     private final QuestionRepository questionRepository;

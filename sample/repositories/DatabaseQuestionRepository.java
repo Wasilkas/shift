@@ -60,25 +60,25 @@ public class DatabaseQuestionRepository implements QuestionRepository {
     @Override
     public QuestionList getAllQuestions(String userId, String subject, String page, String order) {
         String sql = "select QUESTION_ID, TEXT, CORRECT_ANSWER, AUTHOR, SUBJECT" +
-                "from QUESTIONS";
+                " from QUESTIONS";
 
         MapSqlParameterSource params = new MapSqlParameterSource();
 
         if (subject != null && userId != null) {
-            sql += "where SUBJECT = :subject and AUTHOR = :userId";
+            sql += " where SUBJECT = :subject and AUTHOR = :userId";
 
             params.addValue("userId", userId)
                     .addValue("subject", subject);
         }
         else {
             if (subject != null) {
-                sql += "where SUBJECT = :subject";
+                sql += " where SUBJECT = :subject";
 
                 params.addValue("subject", subject);
             }
             else {
                 if (userId != null) {
-                    sql += "where AUTHOR = :userId";
+                    sql += " where AUTHOR = :userId";
 
                     params.addValue("userId", userId);
                 }
