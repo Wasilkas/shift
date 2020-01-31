@@ -1,30 +1,31 @@
 package ftc.shift.sample.models;
 
+import java.beans.ConstructorProperties;
+
 public class Question {
     /**
      * Уникальный идентификатор вопроса
      */
-    private String id;
+    private final String id;
     /**
      * Текст вопроса
      */
-    private String text;
+    private final String text;
     /**
      * Ответ на вопрос
      */
-    private String correctAnswer;
+    private final String correctAnswer;
     /**
      * Автор вопроса
      */
-    private String author;
+    private final String author;
 
     /**
      * Предмет вопроса
      */
-    private String subject;
+    private final String subject;
 
-    public Question() {};
-
+    @ConstructorProperties({"id", "text", "correctAnswer", "author", "subject"})
     public Question(String id, String text, String correctAnswer, String author, String subject) {
         this.id = id;
         this.text = text;

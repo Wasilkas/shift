@@ -99,8 +99,8 @@ public class QuestionController {
      */
     @GetMapping("/test")
     public ResponseEntity<QuestionList> testQuestions(
-            @RequestParam(value = "subject", required = true) String subject,
-            @RequestParam(value = "questionsCount", required = true) String questionsCount) {
+            @RequestParam(value = "subject") String subject,
+            @RequestParam(value = "questionsCount") String questionsCount) {
         QuestionList questions = service.provideTestQuestions(subject, questionsCount);
         return ResponseEntity.ok(questions);
     }

@@ -6,7 +6,6 @@ import ftc.shift.sample.models.Question;
 import ftc.shift.sample.models.QuestionList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
@@ -46,8 +45,8 @@ public class InMemoryQuestionRepository implements QuestionRepository {
         throw new NotFoundException();
     }
 
-     @Override
-     public Question updateQuestion(String userId, String questionId, Question question) {
+    @Override
+    public Question updateQuestion(String userId, String questionId, Question question) {
 
         // Список вопросов пуст
         if (questionCache.size() == 0) {
@@ -72,10 +71,10 @@ public class InMemoryQuestionRepository implements QuestionRepository {
         }
         // Вопрос не найден
         throw new NotFoundException();
-     }
+    }
 
-     @Override
-     public void deleteQuestion(String userId, String questionId) {
+    @Override
+    public void deleteQuestion(String userId, String questionId) {
         // Поиск вопроса по идентификатору
         List<Question> questions = questionCache.stream()
                 .filter(q -> q.getId().equals(questionId))
@@ -90,7 +89,7 @@ public class InMemoryQuestionRepository implements QuestionRepository {
             //
             throw new AccessDeniedException();
         }
-     }
+    }
 
     @Override
     public Question createQuestion(String userId, Question question) {

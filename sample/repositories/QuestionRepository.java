@@ -3,9 +3,6 @@ package ftc.shift.sample.repositories;
 import ftc.shift.sample.models.Question;
 import ftc.shift.sample.models.QuestionList;
 
-import java.util.Collection;
-
-
 public interface QuestionRepository {
 
   Question fetchQuestion(String questionId);
