@@ -1,6 +1,8 @@
 package ftc.shift.sample.repositories;
 
 import ftc.shift.sample.models.Question;
+import ftc.shift.sample.models.QuestionList;
+import ftc.shift.sample.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -9,10 +11,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Реализиция, хранящая все данные в БД
@@ -40,7 +39,7 @@ public class DatabaseQuestionRepository implements QuestionRepository {
                 "QUESTION_ID  VARCHAR(64) default QUESTION_ID_GENERATOR.nextval," +
                 "TEXT     VARCHAR(64)," +
                 "CORRECT_ANSWER  VARCHAR(64)," +
-                "AUTHOR    VARCHAR(64)" +
+                "AUTHOR    VARCHAR(64)," +
                 "SUBJECT  VARCHAR(64)," +
                 ");";
 
@@ -59,23 +58,75 @@ public class DatabaseQuestionRepository implements QuestionRepository {
     }
 
     @Override
-    public Collection<Question> getAllQuestions() {
-        String sql = "select QUESTIONS.QUESTION_ID, TEXT, CORRECT_ANSWER, AUTHOR, SUBJECT";
+    public QuestionList getAllQuestions(String userId, String subject, String page, String order) {
+        String sql = "select QUESTION_ID, TEXT, CORRECT_ANSWER, AUTHOR, SUBJECT" +
+                "from QUESTIONS";
 
-        MapSqlParameterSource params = new MapSqlParameterSource()
-                .addValue("userId", userId);
+        MapSqlParameterSource params = new MapSqlParameterSource();
 
-        return jdbcTemplate.query(sql, params, questionExtractor);
+        if (subject != null && userId != null) {
+            sql += "where SUBJECT = :subject and AUTHOR = :userId";
+
+            params.addValue("userId", userId)
+                    .addValue("subject", subject);
+        }
+        else {
+            if (subject != null) {
+                sql += "where SUBJECT = :subject";
+
+                params.addValue("subject", subject);
+            }
+            else {
+                if (userId != null) {
+                    sql += "where AUTHOR = :userId";
+
+                    params.addValue("userId", userId);
+                }
+            }
+        }
+
+        List<Question> questions = jdbcTemplate.query(sql, params, questionExtractor);
+
+        if (questions == null) {
+            return new QuestionList(new ArrayList<Question>(), 0);
+        }
+
+        if (order.equals("1")) {
+            questions.sort(Comparator.comparing(q -> Integer.parseInt(q.getId())));
+        }
+        else {
+            questions.sort(Comparator.comparing(q -> -Integer.parseInt(q.getId())));
+        }
+
+        if (page.equals("0")) {
+            return new QuestionList(questions, 0);
+        }
+
+        int listSize = questions.size();
+        final int QUESTION_AMOUNT = 10;
+        int intPage = Integer.parseInt(page);
+
+        int lastIndex = (questions.size() - 1) % QUESTION_AMOUNT;
+        questions = (questions.size() <= intPage * QUESTION_AMOUNT) ?
+                questions.subList((intPage - 1) * QUESTION_AMOUNT, (intPage - 1) * QUESTION_AMOUNT + lastIndex + 1) :
+                questions.subList((intPage - 1) * QUESTION_AMOUNT, (intPage - 1) * QUESTION_AMOUNT + QUESTION_AMOUNT);
+
+        return listSize % QUESTION_AMOUNT > 0 ? new QuestionList(questions, listSize / QUESTION_AMOUNT + 1) :
+                new QuestionList(questions, listSize / QUESTION_AMOUNT);
     }
 
     @Override
-    public Question fetchQuestion(String userId, String questionId) {
+    public QuestionList getTestQuestions(String subject, String questionsCount) {
+        return null;
+    }
+
+    @Override
+    public Question fetchQuestion(String questionId) {
         String sql = "select USER_ID, QUESTIONS.QUESTION_ID, NAME, AUTHOR, PAGES, GENRE " +
                 "from QUESTIONS, GENRES " +
                 "where QUESTIONS.QUESTION_ID = GENRES.QUESTION_ID and QUESTIONS.QUESTION_ID=:questionId and QUESTIONS.USER_ID=:userId";
 
         MapSqlParameterSource params = new MapSqlParameterSource()
-                .addValue("userId", userId)
                 .addValue("questionId", questionId);
 
         List<Question> questions = jdbcTemplate.query(sql, params, questionExtractor);
@@ -106,11 +157,7 @@ public class DatabaseQuestionRepository implements QuestionRepository {
 
         // (!) При этом мы не указываем значения для столбца QUESTION_ID.
         // Он будет сгенерирован автоматически на стороне БД
-        MapSqlParameterSource questionParams = new MapSqlParameterSource()
-                .addValue("userId", userId)
-                .addValue("name", Question.getName())
-                .addValue("author", Question.getAuthor())
-                .addValue("pages", Question.getPages());
+        MapSqlParameterSource questionParams = new MapSqlParameterSource();
 
         // Класс, который позволит получить сгенерированный questionId
         GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
@@ -118,18 +165,6 @@ public class DatabaseQuestionRepository implements QuestionRepository {
         jdbcTemplate.update(insertQuestionSql, questionParams, generatedKeyHolder);
 
         String questionId = generatedKeyHolder.getKeys().get("QUESTION_ID").toString();
-        Question.setId(questionId);
-
-        for (String genre : Question.getGenre()) {
-            String insertGenreSql = "insert into GENRES (QUESTION_ID, GENRE) values (:questionId, :genre)";
-
-            // Он будет сгенерирован автоматически на стороне БД
-            MapSqlParameterSource genreParams = new MapSqlParameterSource()
-                    .addValue("questionId", questionId)
-                    .addValue("genre", genre);
-
-            jdbcTemplate.update(insertGenreSql, genreParams);
-        }
 
         return Question;
     }
@@ -146,10 +181,7 @@ public class DatabaseQuestionRepository implements QuestionRepository {
 
         MapSqlParameterSource questionParams = new MapSqlParameterSource()
                 .addValue("questionId", questionId)
-                .addValue("userId", userId)
-                .addValue("name", Question.getName())
-                .addValue("author", Question.getAuthor())
-                .addValue("pages", Question.getPages());
+                .addValue("userId", userId);
 
         jdbcTemplate.update(updateQuestionSql, questionParams);
 
@@ -161,17 +193,6 @@ public class DatabaseQuestionRepository implements QuestionRepository {
 
         jdbcTemplate.update(deleteGenresSql, params);
 
-        // 3) Добавляем новые жанры
-        for (String genre : Question.getGenre()) {
-            String insertGenreSql = "insert into GENRES (QUESTION_ID, GENRE) values (:questionId, :genre)";
-
-            // Он будет сгенерирован автоматически на стороне БД
-            MapSqlParameterSource genreParams = new MapSqlParameterSource()
-                    .addValue("questionId", questionId)
-                    .addValue("genre", genre);
-
-            jdbcTemplate.update(insertGenreSql, genreParams);
-        }
 
         return Question;
     }

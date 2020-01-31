@@ -5,12 +5,14 @@ import ftc.shift.sample.exception.NotFoundException;
 import ftc.shift.sample.models.Question;
 import ftc.shift.sample.models.QuestionList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
+@ConditionalOnProperty(name = "use.database", havingValue = "false")
 public class InMemoryQuestionRepository implements QuestionRepository {
     private List<Question> questionCache = new ArrayList<>();
     private int localId = 0;

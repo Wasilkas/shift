@@ -21,20 +21,9 @@ public class QuestionExtractor implements ResultSetExtractor<List<Question>> {
         while (rs.next()) {
             String questionId = rs.getString("QUESTION_ID");
 
-            Question Question;
-            if (questions.containsKey(questionId)) {
-                Question = questions.get(questionId);
-            } else {
-                Question = new Question();
+            Question question = new Question(rs.getString("QUESTION_ID"), rs.getString("TEXT"), rs.getString("CORRECT_ANSWER"), rs.getString("AUTHOR"), rs.getString("SUBJECT"));
 
-                Question.setId(rs.getString("QUESTION_ID"));
-                Question.setText(rs.getString("TEXT"));
-                Question.setCorrectAnswer(rs.getString("CORRECT_ANSWER"));
-                Question.setAuthor(rs.getString("AUTHOR"));
-                Question.setSubject(rs.getString("SUBJECT"));
-
-                questions.add(Question);
-            }
+            questions.add(question);
         }
 
         return questions;
