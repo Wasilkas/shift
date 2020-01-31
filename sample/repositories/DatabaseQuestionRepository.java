@@ -39,7 +39,7 @@ public class DatabaseQuestionRepository implements QuestionRepository {
 
         String createQuestionTableSql = "create table QUESTIONS (" +
                 "QUESTION_ID  VARCHAR(64) default QUESTION_ID_GENERATOR.nextval," +
-                "TEXT     VARCHAR(64)," +
+                "TEXT     VARCHAR(128)," +
                 "CORRECT_ANSWER  VARCHAR(64)," +
                 "AUTHOR    VARCHAR(64)," +
                 "SUBJECT  VARCHAR(64)," +
@@ -47,6 +47,20 @@ public class DatabaseQuestionRepository implements QuestionRepository {
 
         jdbcTemplate.update(createGenerateQuestionIdSequenceSql, new MapSqlParameterSource());
         jdbcTemplate.update(createQuestionTableSql, new MapSqlParameterSource());
+
+        createQuestion("Антон", new Question("1", "Почему люди думают, что их многочисленные селфи кому-то интересны?", "Разве не интересны:с", "Антон", "Философия"));
+        createQuestion("Антон", new Question("2", "Ответ на главный вопрос со вселенной", "42", "Антон", "Философия"));
+        createQuestion("Артём", new Question("3", "Как долго человек сможет прожить, питаясь только Сникерсом и водой?", "Долго...(относительно)", "Артём", "Философия"));
+        createQuestion("Женя", new Question("4", "В комнате 4 угла. В каждом углу сидела кошка, напротив каждой кошки - 3 кошки. Сколько кошек находилось в комнате?", "4", "Женя", "Математика"));
+        createQuestion("Женя", new Question("5", "Докажите Малую теорему Ферма", "??????", "Женя", "Математика"));
+        createQuestion("Женя", new Question("6", "Год основания ЦФТ", "1991", "Женя", "Математика")); // ВОПРОС ПО ИСТОРИИ
+        createQuestion("Артём", new Question("7", "Основатель Санкт-Петербурга", "Пётр Великий", "Артём", "История"));
+        createQuestion("Артём", new Question("8", "Сколько бит в одном байте?", "8", "Артём", "Информатика"));
+        createQuestion("Антон", new Question("9", "Как назывались китайские счёты в XVI веке?", "Суаньпань", "Антон", "Информатика"));
+        createQuestion("Женя", new Question("10", "Можно ли вытаскивать флешку из компуктера небезопасно?", "Лучше не рисковать...", "Женя", "Информатика"));
+        createQuestion("Женя", new Question("11", "Какой алгоритм на графах позволяет найти кратчайший путь от заданной до всех остальных?", "Алгоритм Дейкстры", "Женя", "Информатика"));
+        //createQuestion("Артём", new Question("10", "Kotlin или Java?", "Java!!1!1!!1!1", "Артём", "Информатика"));
+
     }
 
     @Override
